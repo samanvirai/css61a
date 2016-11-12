@@ -1,0 +1,8 @@
+Expressions
+  Call Expressions in Python
+    All expressions can use function call notation
+    Evaluation procedure for call expressions:
+      1. Evaluate the operator and then the operand subexpressions
+      2. Apply the function that is the value of the operator subexpression to the arguments that are the vlaues of the operand subexpression
+Functions, Objects, and Interpreters
+  
