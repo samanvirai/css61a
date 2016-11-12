@@ -1,0 +1,23 @@
+Efficient Sequence Processing:
+  Sequence Operations
+    Map, filter, and reduce express sequence manipulation using compact expressions
+    Example: Sum all primes in an interval from a (inclusive) to b (exclusive)
+      >>> def sum_primes(a, b):
+            return sum(filter(is_prime, range(a, b)))
+      >>> sum_primes(1, 6)
+      10
+      >>> def is_prime(x):
+            if x <= 1:
+              return False
+            return all(map(lambda y: x% y, range 
+      >>> def sum_primes(a, b):
+            return sum(filter(is_prime, range(a, b)))
+  Streams are Lazy Scheme Lists
+    A stream is a list, but the rest of the list is computed only when needed:
+      >>> (define s (cons-stream 1 (cons-stream 2 nil)))
+      >>> (define t (cons-stream 1(/1 0))))
+      >>> (car (cdr-stream 2))
+      2
+      >>> (define (range-stream a b) if (>= a b) nil (cons-stream a (range-stream (+ a 1) b))))
+      
+      
