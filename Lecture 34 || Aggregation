@@ -1,0 +1,69 @@
+Lecture 34
+  An aggregate function in the [colums] clause computes a value froma group of rows
+  
+  create table animals as
+    select "dog" as kind, 4 as legs, 20 as weight union
+    select "cat"        , 4        , 10           union
+    select "ferret"     , 4        , 10           union
+    select "parrot"     , 2        , 6            union
+    select "penguin"    , 2        , 10           union
+    select "t-rex"      , 2        , 12000;
+    
+  select max(legs) from animals;
+  >4
+  select sum(weight) from animals;
+  >12056
+  select max(legs-weight) + 5 from animals;
+  >1
+  select max(legs), min(weight) from animals;
+  >4|6
+  select min(legs), max(weight) from animals
+    where kind <> "t-rex";
+  >2|20
+  select avg(legs) from animals;
+  >3.0
+  select count(distinct legs) from animals;
+  >2
+  select count(*) from animals;
+  >6
+  select sum(distinct legs) from animals;
+  >12036
+  
+  An aggregate function also selects a row in the table, which may be meaningful
+    
+    select max(weight), kind from animals;
+    >12000|t-rex
+    select min(weight), kind from animals;
+    >6|parrot
+    
+  Rows in a table can be grouped and aggregation is performed on each group
+  
+  select [columns] from [table] group by [expression] having [expression];
+  
+    select legs, max(weight) from animals group by legs;
+    >legs|max(weight) 4|20 2|12000
+    select legs from animals group by legs;
+    >2
+     4
+    select legs, count(*) from animals group by legs;
+    >2|3
+     4|3
+    select legs, weight from animals group by legs, weight;
+    >2|6
+     2|10
+     2|1200
+     4|10
+     4|20
+   
+  A having clause filters the set of groups that are aggregated
+  select weight/legs, count(*) from animals group by weight/legs having count(*)>1;
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
