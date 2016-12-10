@@ -1,0 +1,13 @@
+Lecture 35
+  Distributed computing application consists of multiple programs running on multiple computers that coordinate together to perform sometask
+  The Internet Protocol specifies how to transer packets of data among networks
+    Network structure is dynamic, not fixed
+    No system exists to monitor or track communications
+    Packets are limited to 65k bytes each
+    Packets may arrive in a different order than sent
+    Packets may be duplcikated or lost
+  The Transmission Control Protocol improves reliability
+  The client is a web browser (eg Firefox)
+  The server is a web server
+  HTTP is a protocol designed to implement a Client Server architecture
+  
