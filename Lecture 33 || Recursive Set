@@ -1,0 +1,121 @@
+Lecture 33
+  Query Planning is the manner in which tables are filtered, sorted, and joined affects execution time
+    
+    Select the parents of curly-furred dogs:
+    select parent from parents, dogs
+                  where child = name and fur = "curly"
+    
+    Join all rows of parents to all rows of dogs, filter by child = name and fur = "curly"
+    Join only rows of parents and dogs where child = name, filter by fur = "curly"
+    Filter dogs by fur = "curly", join result with all rows of parents, filter by child = name
+    Filter dogs by fur = "curly", join only rows of result and parents where child = name
+    
+  A create table statement names a table globally
+  A with clause of a select statement names a table that is local to the statement
+  
+    create table parents as 
+      select "abraham" as parent, "barack" as child union
+      
+    with
+      best(dog) as (
+        select "eisenhower" union
+        select "barack"
+      )
+    
+    select parent from parents, best where child = dog;
+    
+    with
+      siblings(first, second) as (
+        select a.child, b.child
+          from parents as a, parents as b
+          where a.parent = b.parent and
+            a.child != b.child
+      )
+    select child as nephew, second as uncle
+      from parents, siblings where parent = first;
+  
+  Local Tables can be Declared Recursively
+  
+    create table parents as
+      select "abraham" as parent, "barack" as child union
+      ...
+    with 
+      ancestors(ancestor, descendent) as (
+        select parent, child from parents union
+        select ancestor, child
+          from ancestors, parents
+          where parent = descendent
+      )
+    select ancestor from ancestors where descendent = "herbert";
+    
+  To create a table with a global name, you need to select the contents of the local table
+  
+    create table odds as
+      with
+        odds(n) as (
+          select 1 union
+          select n+2 from odds where n < 15
+        )
+      select n from odds;
+     
+  Recursive table definitions are only possible within a with clause
+  
+    create table nouns as
+      select "the dog" as phrase union
+      select "the cat"           union
+      select "the bird";
+    select s.phrase || " chased " || o.phrase
+           from nouns as s, nouns as o
+           where s.phrase != o.phrase;
+    with 
+      compounds(phrase, n) as (
+        select phrase, 1 from nouns union
+        select subject.phrase || " that chased " || object.phrase, n+1
+               from compounds as subject, nouns as object
+               where subject.phrase != object.phrase and n < 2
+      )
+    select s.phrase || " chased " || o.phrase
+      from compunds as s, nouns as o;
+      
+  A table containing the inputs to a function can be used to map from output to input
+  
+    create table pairs as
+      with
+        i(n) as (
+          select 1 union
+          select n+1 from i where n < 50
+        )
+      select a.n as x, b.n as y from i as a, i as b where a.n <= b.n;
+      
+    Pythagorean Triples: All triples a, b, c such that a^2 + b^2 = c^2
+      
+      with
+        i(n) as (
+          select 1 union 
+          select n+1 from i where n < 20
+        )
+      select a.n as a, b.n as b, c.n as c
+        from i as a, i as b, i as c
+        where a.n < b.n and a.n*a.b + b.n*b.n = c.n*c.n
+    
+    Fibonacci Sequence: Computing the next Fibonacci number requires both prev and curr
+    
+      create table fibs as
+        with
+          fib(previous, current) as (
+            select 0, 1 union
+            select current, previous+current from fib
+            where current <= 14.157974
+          )
+        select previous as n from fib;
+        
+    create table interest as
+      with
+        cubes(x, y, cube) as (
+          select x, y, x*x*x+y*y*y from pairs
+        )
+      select a.x, a.y, b.x, b.y, a.cube as sum_of_cubes
+             from cubes as a, cubes as b
+             where a.x < b.x and a.cube = b.cube;
+      
+      select * from interest order by sum_of_cubes
