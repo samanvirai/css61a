@@ -1,0 +1,15 @@
+Lecture 27
+  Eval
+    Base cases: 
+      primitive values(numbers)
+      Look up values bound to symbols
+    Recursive Calls:
+      Eval (operator, operands) of call expressionos
+      Apply (procedure, arguments)
+      Eval(sub-expressions) of special forms
+  Apply
+    Base cases:
+      built-in primitive procedures
+    Recursive calls:
+      Eval(body) of user-defined procedures
+      
