@@ -1,0 +1,109 @@
+Lecture 32
+  Two tables A & B are joined by a comma to yield all combos of a row from A & B
+     
+     create table dogs as 
+       select "abraham" as name, "long" as fur union
+       select "barack"         , "short"       union
+       select "clinton"        , "long"        union
+       select "delano"         , "long"        union
+       select "eisenhower"     , "short"       union
+       select "fillmore"       , "curly"       union
+       select "grover"         , "short"       union
+       select "herbert"        , "curly";
+     create table parents as
+       select "abraham" as parent, "barack" as child union
+       select "abraham""         , "clinton"         union
+       ...;
+     
+     To select the parents of curly-furred dogs:
+       select parent from parents, dogs
+                     where child = name and fur = "curly";
+     select * from parents, dogs;
+     will give the rows of parents and dogs combined
+     
+     select * from parents, dogs
+              where child = name and fur = "curly";
+     will only give row combinations where dog is a child and has curly fur
+     
+     select parent from parents, dogs
+              where child = name and fur = "curly";
+     will only give parent of combinations where dog is a child and has curly fur
+  
+  select [columns] from [table] where [condition] order by [order];
+  
+    To select all pairs of siblings:
+      select a.child as first, b.child as second
+        from parents as a, parents as b
+        where a.parent = b.parent and a.child < b.child
+  
+  Multiple tables can be joined to yield all combinations of rows from each:
+    
+    create table grandparents as
+      select a.parent as grandog, b.child as granpup from parents as a, parents as b
+                                                     where b.parent = a.child
+    
+    Select all grandparents with the same fur as their grandchildren:
+      select grandog from grandparents, dogs as c, dogs as d
+                     where grandog = c.name and
+                           granpup = d.name and
+                           c.fur = d.fur
+                           
+  Expressions can contain function calls and arithmetic operators
+  
+    create table cities as
+      select 38 as latitude, 122 as longitude, "Berkeley" as name union
+      select 42,              71,              "Cambridge"        union
+      select 45,              93,              "Minneapolis"      union
+      select 33,             117,              "San Diego"        union
+      select 26,              80,              "Miami"            union
+      select 90,               0,              "North Pole";
+      
+    create table cold as
+      select name from cities where latitude >= 43;
+    
+    select name from cold union select "Chicago";
+      Chicago
+      Minneapolis
+      North Pole
+    
+    create table distances as 
+      select a.name as first, b.name as second,
+             60*(b.latitude - a.latitude) as distance
+             from citites as a, cities as b;
+    
+    select second from distances where first = "Minneapolis" order by distance;
+    
+  String values can be combined to form longer strings
+  
+    select "hello," || "world";
+    >hello, world
+    
+    create table phrase as select "hello, world' as s;
+    select substr(s, 4, 2) || substr(s, instr(s, " ")+1, 1) from phrase;
+    >low
+    
+    create table nouns as 
+      select "dog" as phrase union
+      select "cat"           union
+      select "bird";
+      
+    select subject.phrase || "chased" || object.phrase
+      from nouns as subject, nouns as object
+      where subject.phrase <> object.phrase;
+     
+    create table ands as
+      select first.phrase || "and" || second.phrase
+             from nouns as first, nouns as second
+             where first.phrase <> second.phrase
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
