@@ -1,0 +1,125 @@
+Lecture 29
+  Many sets of data can be processed sequentially
+  A sequence interface selection doesn't work because a sequence has a finite length
+  In big data processing, we will need implicit representation to access elements but not store elemnts
+  Iterables: A container cna provide an iterator that provides access to its elements in some order
+    iter(iterable): Return an iterator over the elements of an iterable value
+    next(iterator): Return the next element in an iterator
+      >>> s = [3, 4, 5]
+      >>> t = iter(s)
+      >>> next(t)
+      3
+      >>> next(t)
+      4
+  Another iterator will go in order, seperately from the other
+  Iterators are always ordered, but the dictionary may not order them
+  If we build a list we will get the remaining contents of an iterator
+  If the dictionary is changed, we cannot use the same iterator
+      >>> counts = [1, 2, 3]
+      >>> items = iter(counts)
+      >>> try:
+            while True:
+              item = next(items)
+              print(item)
+          except StopIteration:
+            pass
+  A StopIteration exception is raised whenever next is called on an empty iterator
+      >>> def contains(a, b):
+            ai = iter(a)
+            for x in b:
+              try:
+                while next(ai) != x:
+                  pass
+                except StopIteration:
+                  return False
+            return True
+  For loops work on any object that is iterable
+      >>> for elem in something_iterable:
+            # do something
+      >>> the iterator = iter(something_iterable)
+          try:
+            while True:
+              elem = next(the_iterator)
+          except StopIteration:
+            pass
+  Many built-in Python sequence operations return iterators that compute results lazily
+      >>> map(func, iterable): Iterate over func(x) for x in iterable
+      >>> filter(func, iterable): Iterate over x in iterable if func(x)
+      >>> zip(first_iter, second_iter): Iterate over co-indexed (x, y) pairs
+      >>> reversed(sequence): Iterate over x in a sequence in reverse order
+  To view the contents of an iterator, place the resulting elements into a container
+      >>> list(iterable): Create a list containig all x in iterable
+      >>> tuple(iterable): Create a tuple containing all x in iterable
+      >>> sorted(iterable): Create a sorted list containing x in iterable
+  Generators: a function that yields values instead of returning them, can yield multiple times
+      >>> def plus_minus(x):
+            yield x
+            yield -x
+      >>> t = plus_minus(3)
+      >>> next(t)
+      3
+      >>> next(t)
+      -3
+      >>> def evens(start, end):
+            even = start + (start % 2)
+            while even < end:
+              yield even
+              even += 2
+      >>> t = evens(2, 10)
+      >>> next(t)
+      2
+      >>> next(t)
+      4
+      >>> next(t)
+      6
+      >>> next(t)
+      8
+      >>> next(t)
+      StopIteration
+  Iterable User-Defined Classes: The special method __iter__ is called by the built-in iter() & should return an iterator
+      >>> class Countdown:
+            def __init__(self, start):
+              self.start = start
+            def __iter__(self):
+              v = self.start
+              while v > 0:
+                yield v
+                v -= 1
+  Generators can Yield from Iterators
+    A yield from statement yields all values from an iterator or iterable
+      >>> list(a_then_b([3, 4], [5, 6]))
+      [3, 4, 5, 6]
+      >>> def a_then_b(a, b):
+            for x in a:
+              yield x
+            for x in b:
+              yield x
+      >>> def a_then_b(a, b):
+            yield from a
+            yield from b
+      >>> list countdown(k):
+      [5, 4, 3, 2, 1]
+      >>> def countdown(k):
+            if k > 0:
+              yield k
+              for x in countdown(k-1):
+                yield x
+      >>> def countdown(k):
+            if k > 0:
+              yield k
+              yield from countdown(k-1)
+            else:
+              yield 'Blast off'
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+          
